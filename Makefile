@@ -14,3 +14,4 @@ uninstall:
 
 clean:
 	obuild clean
+	rm -rf doc
