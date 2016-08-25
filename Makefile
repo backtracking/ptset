@@ -1,12 +1,10 @@
-.PHONY: test
-
-all: *.ml *.mli
+all:
 	obuild configure
-	obuild build lib-ptest
+	obuild build lib-ptset
 
-test: *.ml *.mli
+test:
 	obuild configure
-	obuild build
+	obuild build exe-test
 	./test
 
 doc:
