@@ -306,6 +306,8 @@ let elements s =
      order with little-endian Patricia trees *)
   List.sort Pervasives.compare (elements_aux [] s)
 
+let to_list = elements
+
 let split x s =
   let coll k (l, b, r) =
     if k < x then add k l, b, r
@@ -564,6 +566,8 @@ module Big = struct
     (* we still have to sort because of possible negative elements *)
     List.sort Pervasives.compare (elements_aux [] s)
 
+  let to_list = elements
+
   let split x s =
     let coll k (l, b, r) =
       if k < x then add k l, b, r
@@ -638,6 +642,8 @@ module BigPos = struct
     in
     elements_aux [] s
 
+  let to_list = elements
+
 end
 
 (*s EXPERIMENT: Big-endian Patricia trees with swapped bit sign *)
@@ -688,17 +694,3 @@ module Bigo = struct
     | Branch (_,_,_,t) -> max_elt t
 
 end
-
-let test empty add mem =
-  let seed = Random.int max_int in
-  Random.init seed;
-  let s =
-    let rec loop s i =
-      if i = 1000 then s else loop (add (Random.int max_int) s) (succ i)
-    in
-    loop empty 0
-  in
-  Random.init seed;
-  for i = 0 to 999 do assert (mem (Random.int max_int) s) done
-
-

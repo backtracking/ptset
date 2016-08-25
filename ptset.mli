@@ -36,12 +36,21 @@ include Set.S with type elt = int
 
 val intersect : t -> t -> bool
 
+(* [of_list l] constructs a set from the elements of the list *)
+
+val of_list : elt list -> t
+
+(* [to_list s] alias for [elements s] *)
+
+val to_list : t -> elt list
 
 (*s Big-endian Patricia trees *)
 
 module Big : sig
   include Set.S with type elt = int
   val intersect : t -> t -> bool
+  val of_list : elt list -> t
+  val to_list : t -> elt list
 end
 
 
@@ -55,6 +64,8 @@ end
 module BigPos : sig
   include Set.S with type elt = int
   val intersect : t -> t -> bool
+  val of_list : elt list -> t
+  val to_list : t -> elt list
 end
 
 
