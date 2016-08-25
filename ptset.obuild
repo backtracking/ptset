@@ -1,0 +1,19 @@
+Name: ptset
+Version: 1.0
+Authors: Jean-Christophe Filliâtre
+License: GPL-2.1
+Synopsis: Sets of integers implemented as Patricia trees
+obuild-ver: 1
+
+# Executable batch
+#   oflags: -warn-error PU -bin-annot
+#   src-dir: main, lib
+#   main-is: batch.ml
+#   build-deps: unix, parmap, str
+
+Library PatIntSet
+  oflags: -warn-error PU -bin-annot
+  src-dir: .
+  modules: Ptset
+# build-deps: apron.boxMPQ, apron.octMPQ, apron.polkaMPQ, clangml,
+#             clangml-transforms, bdd, setr
