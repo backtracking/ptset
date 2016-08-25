@@ -1,6 +1,13 @@
+.PHONY: test
+
 all: *.ml *.mli
 	obuild configure
+	obuild build lib-ptest
+
+test: *.ml *.mli
+	obuild configure
 	obuild build
+	./test
 
 doc:
 	mkdir -p doc
