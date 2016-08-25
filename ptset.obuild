@@ -9,11 +9,8 @@ Library ptset
   oflags: -warn-error PU -bin-annot
   src-dir: .
   modules: Ptset
-# build-deps: apron.boxMPQ, apron.octMPQ, apron.polkaMPQ, clangml,
-#             clangml-transforms, bdd, setr
 
 Executable test
   oflags: -warn-error PU -bin-annot
   src-dir: .
   main-is: test.ml
-# build-deps: unix, parmap, str
