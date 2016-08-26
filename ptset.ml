@@ -268,6 +268,9 @@ let rec fold f s accu = match s with
   | Leaf k -> f k accu
   | Branch (_,_,t0,t1) -> fold f t0 (fold f t1 accu)
 
+let map f s =
+  fold (fun x acc -> add (f x) acc) s empty
+
 let rec for_all p = function
   | Empty -> true
   | Leaf k -> p k
@@ -543,6 +546,7 @@ module Big = struct
   let cardinal = cardinal
   let iter = iter
   let fold = fold
+  let map = map
   let for_all = for_all
   let exists = exists
   let filter = filter
