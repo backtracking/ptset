@@ -44,6 +44,12 @@ val of_list : elt list -> t
 
 val to_list : t -> elt list
 
+(* [map f s] is the set whose elements are [f a0],[f a1]... [f
+   aN], where [a0],[a1]...[aN] are the elements of [s].
+   The elements are passed to [f] in unspecified order. *)
+
+val map: (elt -> elt) -> t -> t
+
 (*s Big-endian Patricia trees *)
 
 module Big : sig
@@ -51,8 +57,8 @@ module Big : sig
   val intersect : t -> t -> bool
   val of_list : elt list -> t
   val to_list : t -> elt list
+  val map: (elt -> elt) -> t -> t
 end
-
 
 (*s Big-endian Patricia trees with non-negative elements. Changes:
     - [add] and [singleton] raise [Invalid_arg] if a negative element is given
@@ -66,6 +72,5 @@ module BigPos : sig
   val intersect : t -> t -> bool
   val of_list : elt list -> t
   val to_list : t -> elt list
+  val map: (elt -> elt) -> t -> t
 end
-
-
