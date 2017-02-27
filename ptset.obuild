@@ -11,8 +11,3 @@ Library ptset
   oflags: -warn-error PU
   src-dir: .
   modules: Ptset
-
-Executable test
-  oflags: -warn-error PU
-  src-dir: .
-  main-is: test.ml
