@@ -73,7 +73,7 @@ let rec mem k = function
 
 let find k s = if mem k s then k else raise Not_found
 
-let rec find_opt k s = if mem k s then Some k else None
+let find_opt k s = if mem k s then Some k else None
 
 (*s The following operation [join] will be used in both insertion and
     union. Given two non-empty trees [t0] and [t1] with longest common
@@ -417,6 +417,8 @@ module Big = struct
 
   let find k s = if mem k s then k else raise Not_found
 
+  let find_opt k s = if mem k s then Some k else None
+
   let mask k m  = (k lor (m-1)) land (lnot m)
 
   (* we first write a naive implementation of [highest_bit]
@@ -587,14 +589,32 @@ module Big = struct
 
   let choose = choose
 
+  let choose_opt = choose_opt
+
+  let rec elements_aux acc = function
+    | Empty -> acc
+    | Leaf k -> k :: acc
+    | Branch (_,_,l,r) -> elements_aux (elements_aux acc r) l
+
   let elements s =
-    let rec elements_aux acc = function
-      | Empty -> acc
-      | Leaf k -> k :: acc
-      | Branch (_,_,l,r) -> elements_aux (elements_aux acc r) l
-    in
     (* we still have to sort because of possible negative elements *)
     List.sort Pervasives.compare (elements_aux [] s)
+
+  let find_first p s =
+    List.find p (elements s)
+
+  let find_first_opt p s =
+    try Some (find_first p s) with Not_found -> None
+
+  let rev_elements s =
+    (* we still have to sort because of possible negative elements *)
+    List.sort (fun a b -> Pervasives.compare b a) (elements_aux [] s)
+
+  let find_last p s =
+    List.find p (rev_elements s)
+
+  let find_last_opt p s =
+    try Some (find_last p s) with Not_found -> None
 
   let to_list = elements
 
@@ -610,6 +630,9 @@ module Big = struct
      positive or only negative integers) *)
   let min_elt = min_elt
   let max_elt = max_elt
+
+  let max_elt_opt = max_elt_opt
+  let min_elt_opt = min_elt_opt
 
   let equal = (=)
 
