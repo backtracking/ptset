@@ -681,10 +681,16 @@ module BigPos = struct
     | Leaf k -> k
     | Branch (_,_,s,_) -> min_elt s
 
+  let min_elt_opt s =
+    try Some (min_elt s) with Not_found -> None
+
   let rec max_elt = function
     | Empty -> raise Not_found
     | Leaf k -> k
     | Branch (_,_,_,t) -> max_elt t
+
+  let max_elt_opt s =
+    try Some (max_elt s) with Not_found -> None
 
   (* we do not have to sort anymore *)
   let elements s =
@@ -694,6 +700,22 @@ module BigPos = struct
       | Branch (_,_,l,r) -> elements_aux (elements_aux acc r) l
     in
     elements_aux [] s
+
+  let rev_elements s =
+    let rec elements_aux acc = function
+      | Empty -> acc
+      | Leaf k -> k :: acc
+      | Branch (_,_,l,r) -> elements_aux (elements_aux acc l) r
+    in
+    elements_aux [] s
+
+  let find_first p s = List.find p (elements s)
+
+  let find_first_opt p s = try Some (find_first p s) with Not_found -> None
+
+  let find_last p s = List.find p (rev_elements s)
+
+  let find_last_opt p s = try Some (find_last p s) with Not_found -> None
 
   let to_list = elements
 
