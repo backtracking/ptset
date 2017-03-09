@@ -47,7 +47,9 @@ val exists: (elt -> bool) -> t -> bool
 val filter: (elt -> bool) -> t -> t
 val cardinal: t -> int
 val choose: t -> elt
+val choose_opt: t -> elt option
 val find: elt -> t -> elt
+val find_opt: elt -> t -> elt option
 val of_list : elt list -> t
 val map: (elt -> elt) -> t -> t
 val partition: (elt -> bool) -> t -> t * t
@@ -93,7 +95,9 @@ module Big : sig
   val filter: (elt -> bool) -> t -> t
   val cardinal: t -> int
   val choose: t -> elt
+  val choose_opt: t -> elt option
   val find: elt -> t -> elt
+  val find_opt: elt -> t -> elt option
   val of_list : elt list -> t
   val map: (elt -> elt) -> t -> t
   val partition: (elt -> bool) -> t -> t * t
@@ -131,12 +135,16 @@ module BigPos : sig
   val filter: (elt -> bool) -> t -> t
   val cardinal: t -> int
   val choose: t -> elt
+  val choose_opt: t -> elt option
   val find: elt -> t -> elt
+  val find_opt: elt -> t -> elt option
   val of_list : elt list -> t
   val map: (elt -> elt) -> t -> t
   val partition: (elt -> bool) -> t -> t * t
   val split: elt -> t -> t * bool * t
   val min_elt: t -> elt
+  val min_elt_opt: t -> elt option
   val max_elt: t -> elt
+  val max_elt_opt: t -> elt option
   val elements: t -> elt list
 end

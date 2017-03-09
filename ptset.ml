@@ -70,6 +70,7 @@ let rec mem k = function
   | Branch (_, m, l, r) -> mem k (if zero_bit k m then l else r)
 
 let find k s = if mem k s then k else raise Not_found
+let find_opt k s = if mem k s then Some k else None
 
 (*s The following operation [join] will be used in both insertion and
     union. Given two non-empty trees [t0] and [t1] with longest common
@@ -296,6 +297,10 @@ let rec choose = function
   | Empty -> raise Not_found
   | Leaf k -> k
   | Branch (_, _,t0,_) -> choose t0   (* we know that [t0] is non-empty *)
+let rec choose_opt = function
+  | Empty -> None
+  | Leaf k -> Some k
+  | Branch (_, _,t0,_) -> choose_opt t0   (* we know that [t0] is non-empty *)
 
 let elements s =
   let rec elements_aux acc = function
@@ -369,7 +374,8 @@ module Big = struct
     | Leaf j -> k == j
     | Branch (_, m, l, r) -> mem k (if zero_bit k m then l else r)
 
-  let find k s = if mem k s then k else raise Not_found
+  let find = find
+  let find_opt = find_opt
 
   let mask k m  = (k lor (m-1)) land (lnot m)
 
@@ -540,6 +546,7 @@ module Big = struct
     part (Empty, Empty) s
 
   let choose = choose
+  let choose_opt = choose_opt
 
   let elements s =
     let rec elements_aux acc = function
@@ -606,11 +613,19 @@ module BigPos = struct
     | Empty -> raise Not_found
     | Leaf k -> k
     | Branch (_,_,s,_) -> min_elt s
+  let rec min_elt_opt = function
+    | Empty -> None
+    | Leaf k -> Some k
+    | Branch (_,_,s,_) -> min_elt_opt s
 
   let rec max_elt = function
     | Empty -> raise Not_found
     | Leaf k -> k
     | Branch (_,_,_,t) -> max_elt t
+  let rec max_elt_opt = function
+    | Empty -> None
+    | Leaf k -> Some k
+    | Branch (_,_,_,t) -> max_elt_opt t
 
   (* we do not have to sort anymore *)
   let elements s =
