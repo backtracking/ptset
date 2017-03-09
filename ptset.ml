@@ -13,8 +13,6 @@
 (*                                                                        *)
 (**************************************************************************)
 
-(*i $Id$ i*)
-
 (*s Sets of integers implemented as Patricia trees, following Chris
     Okasaki and Andrew Gill's paper {\em Fast Mergeable Integer Maps}
     ({\tt\small http://www.cs.columbia.edu/\~{}cdo/papers.html\#ml98maps}).
@@ -319,24 +317,6 @@ let split x s =
   in
   fold coll s (Empty, false, Empty)
 
-(*s There is no way to give an efficient implementation of [min_elt]
-    and [max_elt], as with binary search trees.  The following
-    implementation is a traversal of all elements, barely more
-    efficient than [fold min t (choose t)] (resp. [fold max t (choose
-    t)]). Note that we use the fact that there is no constructor
-    [Empty] under [Branch] and therefore always a minimal
-    (resp. maximal) element there. *)
-
-let rec min_elt = function
-  | Empty -> raise Not_found
-  | Leaf k -> k
-  | Branch (_,_,s,t) -> min (min_elt s) (min_elt t)
-
-let rec max_elt = function
-  | Empty -> raise Not_found
-  | Leaf k -> k
-  | Branch (_,_,s,t) -> max (max_elt s) (max_elt t)
-
 (*s Another nice property of Patricia trees is to be independent of the
     order of insertion. As a consequence, two Patricia trees have the
     same elements if and only if they are structurally equal. *)
@@ -579,11 +559,6 @@ module Big = struct
       else l, true, r
     in
     fold coll s (Empty, false, Empty)
-
-  (* could be slightly improved (when we now that a branch contains only
-     positive or only negative integers) *)
-  let min_elt = min_elt
-  let max_elt = max_elt
 
   let equal = (=)
 

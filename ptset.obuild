@@ -1,5 +1,5 @@
 Name: ptset
-Version: 1.0
+Version: 1.1
 Authors: Jean-Christophe Filliâtre
 License: GPL-2.1
 Synopsis: Sets of integers implemented as Patricia trees
