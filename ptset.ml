@@ -73,6 +73,8 @@ let rec mem k = function
 
 let find k s = if mem k s then k else raise Not_found
 
+let find_opt k s = if mem k s then Some k else None
+
 (*s The following operation [join] will be used in both insertion and
     union. Given two non-empty trees [t0] and [t1] with longest common
     prefixes [p0] and [p1] respectively, which are supposed to
@@ -299,15 +301,33 @@ let rec choose = function
   | Leaf k -> k
   | Branch (_, _,t0,_) -> choose t0   (* we know that [t0] is non-empty *)
 
+let choose_opt s =
+  try Some (choose s) with Not_found -> None
+
+let rec elements_aux acc = function
+  | Empty -> acc
+  | Leaf k -> k :: acc
+  | Branch (_,_,l,r) -> elements_aux (elements_aux acc l) r
+
 let elements s =
-  let rec elements_aux acc = function
-    | Empty -> acc
-    | Leaf k -> k :: acc
-    | Branch (_,_,l,r) -> elements_aux (elements_aux acc l) r
-  in
   (* unfortunately there is no easy way to get the elements in ascending
      order with little-endian Patricia trees *)
   List.sort Pervasives.compare (elements_aux [] s)
+
+let rev_elements s =
+  List.sort (fun a b -> Pervasives.compare b a) (elements_aux [] s)
+
+let find_first p s =
+  List.find p (elements s)
+
+let find_first_opt p s =
+  try Some (find_first p s) with Not_found -> None
+
+let find_last p s =
+  List.find p (rev_elements s)
+
+let find_last_opt p s =
+  try Some (find_last p s) with Not_found -> None
 
 let to_list = elements
 
@@ -332,10 +352,16 @@ let rec min_elt = function
   | Leaf k -> k
   | Branch (_,_,s,t) -> min (min_elt s) (min_elt t)
 
+let min_elt_opt s =
+  try Some (min_elt s) with Not_found -> None
+
 let rec max_elt = function
   | Empty -> raise Not_found
   | Leaf k -> k
   | Branch (_,_,s,t) -> max (max_elt s) (max_elt t)
+
+let max_elt_opt s =
+  try Some (max_elt s) with Not_found -> None
 
 (*s Another nice property of Patricia trees is to be independent of the
     order of insertion. As a consequence, two Patricia trees have the
@@ -390,6 +416,8 @@ module Big = struct
     | Branch (_, m, l, r) -> mem k (if zero_bit k m then l else r)
 
   let find k s = if mem k s then k else raise Not_found
+
+  let find_opt k s = if mem k s then Some k else None
 
   let mask k m  = (k lor (m-1)) land (lnot m)
 
@@ -561,14 +589,32 @@ module Big = struct
 
   let choose = choose
 
+  let choose_opt = choose_opt
+
+  let rec elements_aux acc = function
+    | Empty -> acc
+    | Leaf k -> k :: acc
+    | Branch (_,_,l,r) -> elements_aux (elements_aux acc r) l
+
   let elements s =
-    let rec elements_aux acc = function
-      | Empty -> acc
-      | Leaf k -> k :: acc
-      | Branch (_,_,l,r) -> elements_aux (elements_aux acc r) l
-    in
     (* we still have to sort because of possible negative elements *)
     List.sort Pervasives.compare (elements_aux [] s)
+
+  let find_first p s =
+    List.find p (elements s)
+
+  let find_first_opt p s =
+    try Some (find_first p s) with Not_found -> None
+
+  let rev_elements s =
+    (* we still have to sort because of possible negative elements *)
+    List.sort (fun a b -> Pervasives.compare b a) (elements_aux [] s)
+
+  let find_last p s =
+    List.find p (rev_elements s)
+
+  let find_last_opt p s =
+    try Some (find_last p s) with Not_found -> None
 
   let to_list = elements
 
@@ -584,6 +630,9 @@ module Big = struct
      positive or only negative integers) *)
   let min_elt = min_elt
   let max_elt = max_elt
+
+  let max_elt_opt = max_elt_opt
+  let min_elt_opt = min_elt_opt
 
   let equal = (=)
 
@@ -632,10 +681,16 @@ module BigPos = struct
     | Leaf k -> k
     | Branch (_,_,s,_) -> min_elt s
 
+  let min_elt_opt s =
+    try Some (min_elt s) with Not_found -> None
+
   let rec max_elt = function
     | Empty -> raise Not_found
     | Leaf k -> k
     | Branch (_,_,_,t) -> max_elt t
+
+  let max_elt_opt s =
+    try Some (max_elt s) with Not_found -> None
 
   (* we do not have to sort anymore *)
   let elements s =
@@ -645,6 +700,22 @@ module BigPos = struct
       | Branch (_,_,l,r) -> elements_aux (elements_aux acc r) l
     in
     elements_aux [] s
+
+  let rev_elements s =
+    let rec elements_aux acc = function
+      | Empty -> acc
+      | Leaf k -> k :: acc
+      | Branch (_,_,l,r) -> elements_aux (elements_aux acc l) r
+    in
+    elements_aux [] s
+
+  let find_first p s = List.find p (elements s)
+
+  let find_first_opt p s = try Some (find_first p s) with Not_found -> None
+
+  let find_last p s = List.find p (rev_elements s)
+
+  let find_last_opt p s = try Some (find_last p s) with Not_found -> None
 
   let to_list = elements
 
