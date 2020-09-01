@@ -2,6 +2,8 @@ opam-version: "2.0"
 maintainer: "Jean-Christophe.Filliatre@lri.fr"
 authors: "Jean-Christophe Filliâtre"
 synopsis: "Sets of integers implemented as Patricia trees"
+description: "An implementation inspired by Okasaki & Gill's paper
+'Fast Mergeable Integer Maps'"
 license: "LGPL-2.1"
 homepage: "https://github.com/backtracking/ptset"
 bug-reports: "https://github.com/backtracking/ptset/issues"
