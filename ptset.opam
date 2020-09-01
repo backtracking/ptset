@@ -6,6 +6,7 @@ description: "An implementation inspired by Okasaki & Gill's paper
 'Fast Mergeable Integer Maps'"
 license: "LGPL-2.1"
 homepage: "https://github.com/backtracking/ptset"
+doc: "https://backtracking.github.io/ptset"
 bug-reports: "https://github.com/backtracking/ptset/issues"
 depends: [
   "ocaml"
