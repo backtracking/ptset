@@ -302,6 +302,7 @@ let rec choose_opt = function
   | Leaf k -> Some k
   | Branch (_, _,t0,_) -> choose_opt t0   (* we know that [t0] is non-empty *)
 
+(*
 let elements s =
   let rec elements_aux acc = function
     | Empty -> acc
@@ -310,9 +311,10 @@ let elements s =
   in
   (* unfortunately there is no easy way to get the elements in ascending
      order with little-endian Patricia trees *)
-  List.sort Pervasives.compare (elements_aux [] s)
+  List.sort Stdlib.compare (elements_aux [] s)
 
 let to_list = elements
+ *)
 
 let split x s =
   let coll k (l, b, r) =
@@ -330,9 +332,9 @@ let equal = (=)
 
 let compare = compare
 
-(*i*)
+(*
 let make l = List.fold_right add l empty
-(*i*)
+*)
 
 (*s Additional functions w.r.t to [Set.S]. *)
 
@@ -548,6 +550,7 @@ module Big = struct
   let choose = choose
   let choose_opt = choose_opt
 
+  (*
   let elements s =
     let rec elements_aux acc = function
       | Empty -> acc
@@ -555,9 +558,10 @@ module Big = struct
       | Branch (_,_,l,r) -> elements_aux (elements_aux acc r) l
     in
     (* we still have to sort because of possible negative elements *)
-    List.sort Pervasives.compare (elements_aux [] s)
+    List.sort Stdlib.compare (elements_aux [] s)
 
   let to_list = elements
+  *)
 
   let split x s =
     let coll k (l, b, r) =
@@ -571,6 +575,7 @@ module Big = struct
 
   let compare = compare
 
+  (*
   let make l = List.fold_right add l empty
 
   let rec intersect s1 s2 = match (s1,s2) with
@@ -587,6 +592,7 @@ module Big = struct
           intersect s1 (if zero_bit p1 m2 then l2 else r2)
 	else
           false
+   *)
 
 end
 
@@ -636,12 +642,12 @@ module BigPos = struct
     in
     elements_aux [] s
 
-  let to_list = elements
+  (* let to_list = elements *)
 
 end
 
 (*s EXPERIMENT: Big-endian Patricia trees with swapped bit sign *)
-
+(*
 module Bigo = struct
 
   include Big
@@ -659,7 +665,9 @@ module Bigo = struct
 
   let remove x s = remove (swap x) s
 
+(*
   let elements s = List.map swap (elements s)
+ *)
 
   let choose s = swap (choose s)
 
@@ -688,3 +696,4 @@ module Bigo = struct
     | Branch (_,_,_,t) -> max_elt t
 
 end
+ *)

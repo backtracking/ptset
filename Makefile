@@ -1,22 +1,12 @@
+
 all:
-	obuild configure
-	obuild build lib-ptset
+	dune build
 
 test:
-	obuild configure
-	obuild build exe-test
-	./test
+	dune runtest
 
 doc:
-	mkdir -p doc
-	ocamldoc -d doc/ -html ptset.mli
-
-install: all
-	obuild install
-
-uninstall:
-	ocamlfind -remove ptset
+	dune build @doc
 
 clean:
-	obuild clean
-	rm -rf doc
+	dune clean

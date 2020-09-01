@@ -1,7 +1,7 @@
 let rec int_pow a = function
   | 0 -> 1
   | 1 -> a
-  | n -> 
+  | n ->
     let b = int_pow a (n / 2) in
     b * b * (if n mod 2 = 0 then 1 else a)
 
@@ -17,7 +17,7 @@ let test empty add mem =
     loop empty 0
   in
   Random.init seed;
-  for i = 0 to 999 do assert (mem (Random.int max_int) s) done
+  for _i = 0 to 999 do assert (mem (Random.int max_int) s) done
 
 let main () =
   test Ptset.empty Ptset.add Ptset.mem;
