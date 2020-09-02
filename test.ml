@@ -1,13 +1,6 @@
-let rec int_pow a = function
-  | 0 -> 1
-  | 1 -> a
-  | n ->
-    let b = int_pow a (n / 2) in
-    b * b * (if n mod 2 = 0 then 1 else a)
-
-let max_int = (int_pow 2 30) -1
 
 let test empty add mem =
+  let max_int = 1 lsl 30 - 1 in
   let seed = Random.int max_int in
   Random.init seed;
   let s =
@@ -19,9 +12,17 @@ let test empty add mem =
   Random.init seed;
   for _i = 0 to 999 do assert (mem (Random.int max_int) s) done
 
-let main () =
+(* basic add/mem tests *)
+let () =
   test Ptset.empty Ptset.add Ptset.mem;
   test Ptset.Big.empty Ptset.Big.add Ptset.Big.mem;
   test Ptset.BigPos.empty Ptset.BigPos.add Ptset.BigPos.mem
 
-let () = main ()
+open Ptset
+
+(* the bug from "QuickChecking Patricia Trees" is fixed *)
+let () =
+  let s1 = add min_int (add 0 empty) in
+  let s2 = add min_int (add 1 empty) in
+  let s = union s1 s2 in
+  assert (cardinal s = 3)

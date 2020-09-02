@@ -20,13 +20,22 @@
 
     This is a purely applicative data structure implementing a large
     fragment of [Set.S with type elt = int], with identical
-    specifications and similar performances.
+    specifications and similar performances (unless specified otherwise).
 
     One advantage of Patricia trees is unicity of representation.
-    Thus OCaml's structural comparison can be used on sets. *)
+    Thus OCaml's structural comparison can be used on these sets.
+ *)
 
 type t
-  (** sets implemented with little-endian Patricia trees *)
+  (** Sets implemented with little-endian Patricia trees
+
+   There is no efficient ordering of keys within the structure.
+   Consequently,
+   - [min_elt], [max_elt], and [elements] are purposely not provided
+     (if needed, you can implement [min_elt s] with [fold min s (choose s)],
+      and similarly for [max_elt], but this has linear complexity);
+   - [iter], [fold], and [map] *do not* iterate in the key order.
+   *)
 
 type elt = int
 val empty: t
@@ -55,15 +64,6 @@ val of_list : elt list -> t
 val map: (elt -> elt) -> t -> t
 val partition: (elt -> bool) -> t -> t * t
 val split: elt -> t -> t * bool * t
-
-(** Notes:
-    - Functions [min_elt], [max_elt], and [elements] are purposely
-      not provided, as there is no efficient way to implement them.
-      If needed, you can implement [min_elt s] with [fold min s (choose s)],
-      and similarly for [max_elt], but this has linear complexity.
-
-    - Functions [map] and [split] are merely implemented using [fold]
-      and [add]. *)
 
 (** Additional functions not appearing in the signature [Set.S] from ocaml
     standard library. *)
