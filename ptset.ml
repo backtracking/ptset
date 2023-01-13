@@ -62,11 +62,11 @@ let singleton k = Leaf k
     binary search tree, where the branching bit is used to select the
     appropriate subtree. *)
 
-let zero_bit k m = (k land m) == 0
+let zero_bit k m = (k land m) = 0
 
 let rec mem k = function
   | Empty -> false
-  | Leaf j -> k == j
+  | Leaf j -> k = j
   | Branch (_, m, l, r) -> mem k (if zero_bit k m then l else r)
 
 let find k s = if mem k s then k else raise Not_found
@@ -103,13 +103,13 @@ let join (p0,t0,p1,t1) =
     the above branching; if so, we just insert [k] in the appropriate
     subtree, depending of the branching bit. *)
 
-let match_prefix k p m = (mask k m) == p
+let match_prefix k p m = (mask k m) = p
 
 let add k t =
   let rec ins = function
     | Empty -> Leaf k
     | Leaf j as t ->
-	if j == k then t else join (k, Leaf k, j, t)
+	if j = k then t else join (k, Leaf k, j, t)
     | Branch (p,m,t0,t1) as t ->
 	if match_prefix k p m then
 	  if zero_bit k m then
@@ -136,7 +136,7 @@ let branch = function
 let remove k t =
   let rec rmv = function
     | Empty -> Empty
-    | Leaf j as t -> if k == j then Empty else t
+    | Leaf j as t -> if k = j then Empty else t
     | Branch (p,m,t0,t1) as t ->
 	if match_prefix k p m then
 	  if zero_bit k m then
@@ -169,7 +169,7 @@ let rec merge = function
   | Leaf k, t -> add k t
   | t, Leaf k -> add k t
   | (Branch (p,m,s0,s1) as s), (Branch (q,n,t0,t1) as t) ->
-      if m == n && match_prefix q p m then
+      if m = n && match_prefix q p m then
 	(* The trees have the same prefix. Merge the subtrees. *)
 	Branch (p, m, merge (s0,t0), merge (s1,t1))
       else if unsigned_lt m n && match_prefix q p m then
@@ -201,7 +201,7 @@ let rec subset s1 s2 = match (s1,s2) with
   | Leaf k1, _ -> mem k1 s2
   | Branch _, Leaf _ -> false
   | Branch (p1,m1,l1,r1), Branch (p2,m2,l2,r2) ->
-      if m1 == m2 && p1 == p2 then
+      if m1 = m2 && p1 = p2 then
 	subset l1 l2 && subset r1 r2
       else if unsigned_lt m2 m1 && match_prefix p1 p2 m2 then
 	if zero_bit p1 m2 then
@@ -221,7 +221,7 @@ let rec inter s1 s2 = match (s1,s2) with
   | Leaf k1, _ -> if mem k1 s2 then s1 else Empty
   | _, Leaf k2 -> if mem k2 s1 then s2 else Empty
   | Branch (p1,m1,l1,r1), Branch (p2,m2,l2,r2) ->
-      if m1 == m2 && p1 == p2 then
+      if m1 = m2 && p1 = p2 then
 	merge (inter l1 l2, inter r1 r2)
       else if unsigned_lt m1 m2 && match_prefix p2 p1 m1 then
 	inter (if zero_bit p2 m1 then l1 else r1) s2
@@ -236,7 +236,7 @@ let rec diff s1 s2 = match (s1,s2) with
   | Leaf k1, _ -> if mem k1 s2 then Empty else s1
   | _, Leaf k2 -> remove k2 s1
   | Branch (p1,m1,l1,r1), Branch (p2,m2,l2,r2) ->
-      if m1 == m2 && p1 == p2 then
+      if m1 = m2 && p1 = p2 then
 	merge (diff l1 l2, diff r1 r2)
       else if unsigned_lt m1 m2 && match_prefix p2 p1 m1 then
 	if zero_bit p2 m1 then
@@ -344,7 +344,7 @@ let rec intersect s1 s2 = match (s1,s2) with
   | Leaf k1, _ -> mem k1 s2
   | _, Leaf k2 -> mem k2 s1
   | Branch (p1,m1,l1,r1), Branch (p2,m2,l2,r2) ->
-      if m1 == m2 && p1 == p2 then
+      if m1 = m2 && p1 = p2 then
         intersect l1 l2 || intersect r1 r2
       else if unsigned_lt m1 m2 && match_prefix p2 p1 m1 then
         intersect (if zero_bit p2 m1 then l1 else r1) s2
@@ -369,11 +369,11 @@ module Big = struct
 
   let singleton k = Leaf k
 
-  let zero_bit k m = (k land m) == 0
+  let zero_bit k m = (k land m) = 0
 
   let rec mem k = function
     | Empty -> false
-    | Leaf j -> k == j
+    | Leaf j -> k = j
     | Branch (_, m, l, r) -> mem k (if zero_bit k m then l else r)
 
   let find = find
@@ -419,13 +419,13 @@ module Big = struct
     else
       Branch (mask p0 m, m, t1, t0)
 
-  let match_prefix k p m = (mask k m) == p
+  let match_prefix k p m = (mask k m) = p
 
   let add k t =
     let rec ins = function
       | Empty -> Leaf k
       | Leaf j as t ->
-	  if j == k then t else join (k, Leaf k, j, t)
+	  if j = k then t else join (k, Leaf k, j, t)
       | Branch (p,m,t0,t1) as t ->
 	  if match_prefix k p m then
 	    if zero_bit k m then
@@ -442,7 +442,7 @@ module Big = struct
   let remove k t =
     let rec rmv = function
       | Empty -> Empty
-      | Leaf j as t -> if k == j then Empty else t
+      | Leaf j as t -> if k = j then Empty else t
       | Branch (p,m,t0,t1) as t ->
 	  if match_prefix k p m then
 	    if zero_bit k m then
@@ -460,7 +460,7 @@ module Big = struct
     | Leaf k, t -> add k t
     | t, Leaf k -> add k t
     | (Branch (p,m,s0,s1) as s), (Branch (q,n,t0,t1) as t) ->
-	if m == n && match_prefix q p m then
+	if m = n && match_prefix q p m then
 	  (* The trees have the same prefix. Merge the subtrees. *)
 	  Branch (p, m, merge (s0,t0), merge (s1,t1))
 	else if unsigned_lt n m && match_prefix q p m then
@@ -487,7 +487,7 @@ module Big = struct
     | Leaf k1, _ -> mem k1 s2
     | Branch _, Leaf _ -> false
     | Branch (p1,m1,l1,r1), Branch (p2,m2,l2,r2) ->
-	if m1 == m2 && p1 == p2 then
+	if m1 = m2 && p1 = p2 then
 	  subset l1 l2 && subset r1 r2
 	else if unsigned_lt m1 m2 && match_prefix p1 p2 m2 then
 	  if zero_bit p1 m2 then
@@ -503,7 +503,7 @@ module Big = struct
     | Leaf k1, _ -> if mem k1 s2 then s1 else Empty
     | _, Leaf k2 -> if mem k2 s1 then s2 else Empty
     | Branch (p1,m1,l1,r1), Branch (p2,m2,l2,r2) ->
-	if m1 == m2 && p1 == p2 then
+	if m1 = m2 && p1 = p2 then
 	  merge (inter l1 l2, inter r1 r2)
 	else if unsigned_lt m2 m1 && match_prefix p2 p1 m1 then
 	  inter (if zero_bit p2 m1 then l1 else r1) s2
@@ -518,7 +518,7 @@ module Big = struct
     | Leaf k1, _ -> if mem k1 s2 then Empty else s1
     | _, Leaf k2 -> remove k2 s1
     | Branch (p1,m1,l1,r1), Branch (p2,m2,l2,r2) ->
-	if m1 == m2 && p1 == p2 then
+	if m1 = m2 && p1 = p2 then
 	  merge (diff l1 l2, diff r1 r2)
 	else if unsigned_lt m2 m1 && match_prefix p2 p1 m1 then
 	  if zero_bit p2 m1 then
@@ -584,7 +584,7 @@ module Big = struct
     | Leaf k1, _ -> mem k1 s2
     | _, Leaf k2 -> mem k2 s1
     | Branch (p1,m1,l1,r1), Branch (p2,m2,l2,r2) ->
-	if m1 == m2 && p1 == p2 then
+	if m1 = m2 && p1 = p2 then
           intersect l1 l2 || intersect r1 r2
 	else if unsigned_lt m2 m1 && match_prefix p2 p1 m1 then
           intersect (if zero_bit p2 m1 then l1 else r1) s2
@@ -612,7 +612,7 @@ module BigPos = struct
 
   let rec mem k = function
     | Empty -> false
-    | Leaf j -> k == j
+    | Leaf j -> k = j
     | Branch (p, _, l, r) -> if k <= p then mem k l else mem k r
 
   let rec min_elt = function
