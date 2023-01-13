@@ -61,6 +61,7 @@ val choose_opt: t -> elt option
 val find: elt -> t -> elt
 val find_opt: elt -> t -> elt option
 val of_list : elt list -> t
+val of_seq : elt Seq.t -> t
 val map: (elt -> elt) -> t -> t
 val partition: (elt -> bool) -> t -> t * t
 val split: elt -> t -> t * bool * t
@@ -100,6 +101,7 @@ module Big : sig
   val find: elt -> t -> elt
   val find_opt: elt -> t -> elt option
   val of_list : elt list -> t
+  val of_seq : elt Seq.t -> t
   val map: (elt -> elt) -> t -> t
   val partition: (elt -> bool) -> t -> t * t
   val split: elt -> t -> t * bool * t
@@ -140,6 +142,7 @@ module BigPos : sig
   val find: elt -> t -> elt
   val find_opt: elt -> t -> elt option
   val of_list : elt list -> t
+  val of_seq : elt Seq.t -> t
   val map: (elt -> elt) -> t -> t
   val partition: (elt -> bool) -> t -> t * t
   val split: elt -> t -> t * bool * t
@@ -148,4 +151,5 @@ module BigPos : sig
   val max_elt: t -> elt
   val max_elt_opt: t -> elt option
   val elements: t -> elt list
+  val to_seq: t -> elt Seq.t
 end

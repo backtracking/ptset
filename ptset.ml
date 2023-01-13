@@ -123,6 +123,8 @@ let add k t =
 
 let of_list = List.fold_left (fun s x -> add x s) empty
 
+let of_seq seq = Seq.fold_left (fun s x -> add x s) empty seq
+
 (*s The code to remove an element is basically similar to the code of
     insertion. But since we have to maintain the invariant that both
     subtrees of a [Branch] node are non-empty, we use here the
@@ -439,6 +441,8 @@ module Big = struct
 
   let of_list = List.fold_left (fun s x -> add x s) empty
 
+  let of_seq seq = Seq.fold_left (fun s x -> add x s) empty seq
+
   let remove k t =
     let rec rmv = function
       | Empty -> Empty
@@ -644,6 +648,13 @@ module BigPos = struct
 
   (* let to_list = elements *)
 
+  let to_seq s =
+    let rec elements_aux acc s () = match s with
+      | Empty -> Seq.Nil
+      | Leaf k -> Seq.Cons (k, acc)
+      | Branch (_,_,l,r) -> elements_aux (elements_aux acc r) l ()
+    in
+    elements_aux Seq.empty s
 end
 
 (*s EXPERIMENT: Big-endian Patricia trees with swapped bit sign *)
