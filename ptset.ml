@@ -328,9 +328,31 @@ let split x s =
     order of insertion. As a consequence, two Patricia trees have the
     same elements if and only if they are structurally equal. *)
 
-let equal = (=)
+let rec equal s1 s2 = match s1, s2 with
+  | Empty, Empty -> true
+  | Leaf k1, Leaf k2 -> k1 = k2
+  | Branch (p1, m1, tl1, tr1), Branch (p2, m2, tl2, tr2) ->
+    p1 = p2 && m1 = m2 && equal tl1 tl2 && equal tr1 tr2
+  | _, _ -> false
 
-let compare = compare
+let rec compare s1 s2 = match s1, s2 with
+  | Empty, Empty -> 0
+  | Empty, (Leaf _ | Branch _) | Leaf _, Branch _ -> -1
+  | (Leaf _ | Branch _), Empty | Branch _, Leaf _ -> 1
+  | Leaf k1, Leaf k2 -> Stdlib.compare k1 k2
+  | Branch (p1, m1, tl1, tr1), Branch (p2, m2, tl2, tr2) ->
+    let np = Stdlib.compare p1 p2 in
+    if np <> 0
+    then np
+    else
+      let nm = Stdlib.compare m1 m2 in
+      if nm <> 0
+      then nm
+      else
+        let ntl = compare tl1 tl2 in
+        if ntl <> 0
+        then ntl
+        else compare tr1 tr2
 
 (*
 let make l = List.fold_right add l empty
@@ -571,7 +593,7 @@ module Big = struct
     in
     fold coll s (Empty, false, Empty)
 
-  let equal = (=)
+  let equal = equal
 
   let compare = compare
 
