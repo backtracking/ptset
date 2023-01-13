@@ -121,7 +121,7 @@ let add k t =
   in
   ins t
 
-let of_list = List.fold_left (fun s x -> add x s) empty
+let of_list l = List.fold_left (fun s x -> add x s) empty l
 
 (*s The code to remove an element is basically similar to the code of
     insertion. But since we have to maintain the invariant that both
@@ -437,7 +437,7 @@ module Big = struct
     in
     ins t
 
-  let of_list = List.fold_left (fun s x -> add x s) empty
+  let of_list l = List.fold_left (fun s x -> add x s) empty l
 
   let remove k t =
     let rec rmv = function
@@ -606,7 +606,7 @@ module BigPos = struct
 
   let add x s = if x < 0 then invalid_arg "BigPos.add"; add x s
 
-  let of_list = List.fold_left (fun s x -> add x s) empty
+  let of_list l = List.fold_left (fun s x -> add x s) empty l
 
   (* Patricia trees are now binary search trees! *)
 
